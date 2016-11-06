@@ -1,0 +1,9 @@
+{
+  "name": "wechat-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "2.0.0-beta.30"
+  }
+}

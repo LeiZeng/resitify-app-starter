@@ -1,0 +1,7 @@
+{
+  "apps" : [{
+    "name"       : "wechat-app-server",
+    "script"     : "index.js",
+    "max_memory_restart": "200M"
+  }]
+}
