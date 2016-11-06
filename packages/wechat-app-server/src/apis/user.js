@@ -1,7 +1,8 @@
 exports.login = function (req, res, next) {
   var user = {};
-  user.username = req.query.username;
-  user.password = req.query.password;
+  // console.log(req);
+  user.username = req.body.username;
+  user.password = req.body.password;
   res.send(200, user);
   next();
 };

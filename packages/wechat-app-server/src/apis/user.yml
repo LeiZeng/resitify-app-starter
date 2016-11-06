@@ -1,18 +1,4 @@
-tags:
-  - name: exampleYml
-    description: All about API using CoffeeScript annotations
-parameters:
-  - name: username
-    in: query
-    description: Your username
-    required: true
-    type: string
-  - name: password
-    in: query
-    description: Your password
-    required: true
-    type: string
-
+# http://swagger.io/specification/
 paths:
   '/login':
     post:
@@ -20,9 +6,16 @@ paths:
       tags:
         - example
       description: Returns a user based on username
-      operationId: loginYml
+      operationId: login
       consumes:
-        - text/html
+        - application/json
+      parameters:
+        - name: user
+          in: body
+          description: Your username
+          required: true
+          schema:
+            $ref: '#/definitions/User'
       responses:
         200:
           description: Successful response.
@@ -34,9 +27,11 @@ paths:
       tags:
         - example
       description: 'Return "Hello #{ name }!" string'
-      operationId: helloYml
+      operationId: hello
       consumes:
         - text/html
+      produces:
+        - application/json
       parameters:
         - name: name
           in: query
@@ -57,5 +52,7 @@ definitions:
       properties:
         username:
           type: string
+          default: 'Sam'
         password:
           type: string
+          default: 'pass'
