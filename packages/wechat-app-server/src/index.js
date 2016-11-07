@@ -1,7 +1,8 @@
 import restify from 'restify'
 import swagger from 'swagger-restify'
 
-import user from './apis/user'
+import './db'
+import { login, hello } from './apis/user'
 
 const server = restify.createServer()
 const port = 1108
@@ -14,8 +15,8 @@ restify.defaultResponseHeaders = function(data) {
     this.header('Access-Control-Allow-Origin', '*')
 }
 
-server.post(/^\/login/, user.login)
-server.get(/^\/hello/, user.hello)
+server.post(/^\/login/, login)
+server.get(/^\/hello/, hello)
 
 swagger.init(server, {
     swagger: '2.0', // or swaggerVersion as backward compatible

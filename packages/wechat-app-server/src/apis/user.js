@@ -1,14 +1,21 @@
-exports.login = function (req, res, next) {
-  var user = {};
-  // console.log(req);
-  user.username = req.body.username;
-  user.password = req.body.password;
-  res.send(200, user);
-  next();
-};
+import mongoose from 'mongoose'
+const User = mongoose.model('User')
 
-exports.hello = function (req, res, next) {
-  var name = req.query.name || 'unknown';
-  res.send(200, "Hello " + name + "!");
-  next();
-};
+export const login = (req, res, next) => {
+  const { username, password } = req.body
+  User.create({
+    name: username,
+    password: password
+  }, (err, user) => {
+    if (err) {
+      next(err)
+    }
+    res.send(200, user)
+  })
+}
+
+export const hello = (req, res, next) => {
+  const name = req.query.name || 'unknown'
+  res.send(200, `Hello ${name}!`)
+  next()
+}

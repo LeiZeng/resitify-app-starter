@@ -1,0 +1,14 @@
+version: '2'
+services:
+  app-server:
+    build: .
+    ports:
+     - "1108:1108"
+    volumes:
+     - .:/app
+    depends_on:
+     - mongo
+  mongo:
+    image: mvertes/alpine-mongo
+    ports:
+     - '27017:27017'
