@@ -5,10 +5,12 @@
   "license": "MIT",
   "scripts": {
     "build": "babel -d dist src",
-    "start": "pm2 start pm2.json"
+    "start": "pm2-dev start pm2.json"
   },
   "dependencies": {
     "mongoose": "^4.6.6",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "restify": "^4.2.0",
     "swagger-restify": "vellotis/swagger-restify"
   },

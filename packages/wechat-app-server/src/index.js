@@ -1,8 +1,9 @@
 import restify from 'restify'
 import swagger from 'swagger-restify'
 
-import './db'
-import { login, hello } from './apis/user'
+import './middlewares/db'
+import passport, { login } from './middlewares/passport-local'
+import { hello } from './apis/user'
 
 const server = restify.createServer()
 const port = 1108
@@ -10,6 +11,8 @@ const port = 1108
 server.pre(restify.pre.userAgentConnection())
 server.use(restify.bodyParser())
 server.use(restify.queryParser({ mapParams: false }))
+
+passport(server)
 
 restify.defaultResponseHeaders = function(data) {
     this.header('Access-Control-Allow-Origin', '*')

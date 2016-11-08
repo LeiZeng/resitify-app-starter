@@ -1,9 +1,16 @@
 import { Schema } from 'mongoose'
 
 export default Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
   nickname: String,
-  password: String,
+  password: {
+    type: String,
+    required: true
+  },
   uid: String,
   phone: String,
   email: String
