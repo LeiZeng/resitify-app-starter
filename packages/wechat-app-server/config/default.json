@@ -1,3 +1,4 @@
 {
-  "port": 1108
+  "port": 1108,
+  "salt": "ble ble bleh"
 }

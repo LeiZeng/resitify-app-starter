@@ -10,10 +10,16 @@ export default (server) => {
   server.use(passport.session())
 
   // This is how a user gets serialized
-  passport.serializeUser((user, done) => done(null, user.id))
+  passport.serializeUser((user, done) => {
+    console.log('serialized', user);
+    done(null, user.id)
+  })
 
   // This is how a user gets deserialized
-  passport.deserializeUser((id, done) => done(null, {id:'123456', username:'john'}));
+  passport.deserializeUser((id, done) => {
+    console.log('de serialized', id);
+    done(null, {id:'123456', username:'john'})
+  });
 
   passport.use(
     new Strategy(

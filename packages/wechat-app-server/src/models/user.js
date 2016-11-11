@@ -1,8 +1,7 @@
 import mongoose from 'mongoose'
-import config from 'config'
 import bcrypt from 'bcrypt'
 
-const salt = config.get('salt')
+const salt = bcrypt.genSaltSync(10)
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: true },
@@ -32,7 +31,7 @@ UserSchema.statics.createUser = function createUser(data) {
   })
 }
 
-UserSchema.statics.isValidPassword = function isValidPassword(username, password) {
+UserSchema.statics.auth = function isValidPassword(username, password) {
   const model = this
 
   return new Promise(function(resolve, reject) {
@@ -46,7 +45,11 @@ UserSchema.statics.isValidPassword = function isValidPassword(username, password
           if (err) {
             return reject(err)
           }
-          resolve(same)
+          if (same) {
+            resolve(user)
+          } else {
+            resolve(null)
+          }
         })
       })
   })
@@ -63,14 +66,14 @@ UserSchema.statics.findByName = function(username) {
   })
 }
 
-UserSchema.statics.auth = function auth(username, password) {
-  const model = this
-
-  return new Promise(function(resolve, reject) {
-    return model.findByName(username)
-      .then(user => (user.password === password ? resolve(user) : resolve(null)))
-  })
-}
+// UserSchema.statics.auth = function auth(username, password) {
+//   const model = this
+//
+//   return new Promise(function(resolve, reject) {
+//     return model.findByName(username)
+//       .then(user => (user.password === password ? resolve(user) : resolve(null)))
+//   })
+// }
 
 UserSchema.virtual('profile').get(function profile() {
   return { username: this.username }
