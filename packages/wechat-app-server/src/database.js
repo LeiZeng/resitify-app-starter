@@ -27,4 +27,4 @@ process.on('SIGINT', function() {
   });
 });
 
-require('../models/user')
+require('./models/user')

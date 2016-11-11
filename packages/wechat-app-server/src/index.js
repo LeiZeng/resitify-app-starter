@@ -2,8 +2,9 @@ import restify from 'restify'
 import sessions from 'client-sessions'
 import config from 'config'
 
-import './middlewares/db'
-import passport, { login } from './middlewares/passport-local'
+import './database'
+import passport from './passport'
+import * as user from './apis/user'
 
 const server = restify.createServer()
 const port = config.get('port')
@@ -23,14 +24,16 @@ server.use(sessions({
 
 passport(server)
 if (process.env.NODE_ENV === 'development') {
-  require('./middlewares/swagger').default(server)
+  require('./swagger').default(server)
 }
 
 restify.defaultResponseHeaders = function(data) {
     this.header('Access-Control-Allow-Origin', '*')
 }
 
-server.post(/^\/login/, login)
+server.post('/login', user.login)
+server.post('/register', user.register)
+server.get('/profile/:id', user.profile)
 
 console.log(`running at ${process.env.NODE_ENV} mode.`)
 server.listen(port)

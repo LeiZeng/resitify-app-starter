@@ -1,19 +1,58 @@
 import mongoose from 'mongoose'
-import findOrCreate from 'mongoose-findorcreate'
-import md5 from 'md5'
+import config from 'config'
+import bcrypt from 'bcrypt'
 
-export const Schema = mongoose.Schema({
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+const salt = config.get('salt')
+
+const UserSchema = new mongoose.Schema({
   username: { type: String, unique: true },
-  avatar: String,
-  password: String,
-  locale: { type: String, default: 'en-us' }
+  id: {
+    type: String,
+    index: true,
+    unique: true
+  },
+  password: String
 })
 
-Schema.plugin(findOrCreate)
+UserSchema.statics.createUser = function createUser(data) {
+  const { username, password } = data
+  const model = this
 
-Schema.statics.findByName = function(username, cb) {
+  return new Promise(function(resolve, reject) {
+    model.create({
+      username,
+      password: bcrypt.hashSync(password, salt)
+    }, (err, user) => {
+      if (err) {
+        return reject(err)
+      }
+
+      resolve(user)
+    })
+  })
+}
+
+UserSchema.statics.isValidPassword = function isValidPassword(username, password) {
+  const model = this
+
+  return new Promise(function(resolve, reject) {
+    model.findByName(username)
+      .then(user => {
+        if (!user) {
+          return reject()
+        }
+
+        bcrypt.compare(password, user.password, (err, same) => {
+          if (err) {
+            return reject(err)
+          }
+          resolve(same)
+        })
+      })
+  })
+}
+
+UserSchema.statics.findByName = function(username) {
   const model = this
 
   return new Promise(function(resolve, reject) {
@@ -24,39 +63,24 @@ Schema.statics.findByName = function(username, cb) {
   })
 }
 
-Schema.statics.findOrCreateUser = function(data) {
+UserSchema.statics.auth = function auth(username, password) {
   const model = this
-  const { username, avatar, locale } = data
-  const password = md5(data.password)
 
-  return new Promise((resolve, reject) => {
-    model.findOrCreate(
-      { username, password }, { username, avatar, locale },
-      (err, user) => err ? reject(err) : resolve(user)
-    )
-  })
-}
-
-Schema.statics.auth = function(username, password) {
-  const model = this
   return new Promise(function(resolve, reject) {
-    model.findByName(username)
-    .then(user => {
-      console.log(user, username, password);
-
-      if (!user) {
-        return resolve(null)
-      }
-      if (user.password === password) {
-        return resolve(user)
-      }
-      resolve(null)
-    })
+    return model.findByName(username)
+      .then(user => (user.password === password ? resolve(user) : resolve(null)))
   })
 }
 
-Schema.methods.isValidPassword = function(password) {
-  return this.password === md5(password)
-}
+UserSchema.virtual('profile').get(function profile() {
+  return { username: this.username }
+})
 
-const User = mongoose.model('User', Schema)
+UserSchema.pre('save', function save(next) {
+  if (!this.created) this.created = new Date
+  if (!this.id) this.id = this._id
+
+  next()
+})
+
+export default mongoose.model('User', UserSchema)
