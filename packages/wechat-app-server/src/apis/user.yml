@@ -21,38 +21,16 @@ paths:
           description: Successful response.
           schema:
             '$ref': '#/definitions/User'
-  '/hello':
-    get:
-      summary: Get hello message
-      tags:
-        - example
-      description: 'Return "Hello #{ name }!" string'
-      operationId: hello
-      consumes:
-        - text/html
-      produces:
-        - application/json
-      parameters:
-        - name: name
-          in: query
-          description: Hello subject
-          required: true
-          type: string
-      responses:
-        200:
-          description: 'Successful response'
-          schema:
-            type: string
 
 definitions:
-    User:
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          default: 'Sam'
-        password:
-          type: string
-          default: 'pass'
+  User:
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+        default: 'Sam'
+      password:
+        type: string
+        default: 'pass'

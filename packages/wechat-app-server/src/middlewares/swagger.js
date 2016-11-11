@@ -1,6 +1,7 @@
+import config from 'config'
 import swagger from 'swagger-restify'
 
-export default server => {
+export default (server) => {
   swagger.init(server, {
       swagger: '2.0', // or swaggerVersion as backward compatible
       info: {
@@ -11,7 +12,7 @@ export default server => {
         name: 'example',
         description: 'Just an example API'
       }],
-      host: 'localhost:' + port,
+      host: 'localhost:' + config.get('port'),
       apis: ['./src/apis/user.yml'],
       produces: [
         'application/json',

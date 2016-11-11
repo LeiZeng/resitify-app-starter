@@ -1,11 +1,12 @@
 import restify from 'restify'
 import sessions from 'client-sessions'
+import config from 'config'
 
 import './middlewares/db'
 import passport, { login } from './middlewares/passport-local'
 
 const server = restify.createServer()
-const port = 1108
+const port = config.get('port')
 
 server.pre(restify.pre.userAgentConnection())
 server.use(restify.bodyParser())
@@ -22,7 +23,7 @@ server.use(sessions({
 
 passport(server)
 if (process.env.NODE_ENV === 'development') {
-  require('./middlewares/swagger')(server)
+  require('./middlewares/swagger').default(server)
 }
 
 restify.defaultResponseHeaders = function(data) {
@@ -31,6 +32,7 @@ restify.defaultResponseHeaders = function(data) {
 
 server.post(/^\/login/, login)
 
+console.log(`running at ${process.env.NODE_ENV} mode.`)
 server.listen(port)
 
 console.log(`server start at ${port}`)

@@ -1,6 +1,9 @@
+import mongoose from 'mongoose'
 import restify from 'restify'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
+
+const User = mongoose.model('User')
 
 export default (server) => {
   server.use(passport.initialize())
@@ -16,11 +19,10 @@ export default (server) => {
     new Strategy(
       { usernameField: 'username', session: true },
       (username, password, done) => {
-          if(username === 'john' && password === 'johnspassword') {
-              return done(null, {id:123456, username:'john'});
-          }
-
-          return done(null, false, { error: 'Incorrect username or password.' });
+          User.auth(username, password)
+          .then(user => {
+            user ? done(null, user): done(null, false, { error: 'Incorrect username or password.' })
+          })
       }
     )
   );
@@ -54,6 +56,5 @@ export const login = (req, res, next) => {
             res.json({ success: 'Welcome!'});
             return next();
         });
-
     })(req, res, next);
 }

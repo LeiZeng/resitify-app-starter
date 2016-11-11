@@ -3,19 +3,14 @@ const User = mongoose.model('User')
 
 export const login = (req, res, next) => {
   const { username, password } = req.body
-  User.create({
-    name: username,
-    password: password
-  }, (err, user) => {
-    if (err) {
-      next(err)
-    }
-    res.send(200, user)
-  })
-}
+  console.log(username, password)
 
-export const hello = (req, res, next) => {
-  const name = req.query.name || 'unknown'
-  res.send(200, `Hello ${name}!`)
-  next()
+  User.auth(username, password)
+    .then(user => {
+      if (!user) {
+        return res.send(401)
+      }
+      res.send(200, user)
+    })
+    .catch(next)
 }
