@@ -1,5 +1,5 @@
 {
-  "name": "wechat-app-server",
+  "name": "sample-app-server",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
